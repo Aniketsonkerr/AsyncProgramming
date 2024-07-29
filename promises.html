@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Promises</title>
+    <style>
+      body {
+        background-color: rgb(226, 214, 43);
+      }
+      .content {
+        display: flex;
+        margin: 20px auto;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        border-radius: 5px;
+        width: 700px;
+        height: 90vh;
+        flex-direction: column;
+      }
+      .api-section {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        background-color: white;
+        padding: auto;
+        margin: auto;
+        flex-wrap: wrap;
+        overflow: auto;
+        height: 100%;
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+
+      .box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        flex-wrap: wrap;
+        overflow: auto;
+        background-color: rgb(162, 34, 201);
+        border-radius: 5px;
+      }
+      .btn {
+        color: white;
+        background-color: rgb(162, 34, 201);
+        border: none;
+        margin: 10px;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: medium;
+        border: solid white 2px;
+      }
+      .btn:hover {
+        background-color: rgb(77, 13, 88);
+        cursor: pointer;
+      }
+      .message {
+        margin-right: 256px;
+      }
+    </style>
+  </head>
+  <main class="container">
+    <div class="content">
+      <button class="btn">click me!</button>
+      <section class="box">
+        <div class="api-section">
+          <h1 class="message"></h1>
+        </div>
+      </section>
+    </div>
+  </main>
+  </body>
+  <script>
+    const btn = document.querySelector(".btn");
+    const apiContent = document.querySelector(".api-section");
+    const message = document.querySelector(".message");
+    btn.addEventListener("click", fetchFunction
+    );
+    function fetchFunction(){
+      const promiseOne = new Promise((resolve, reject) => {
+      message.innerHTML = "Loading...";
+      const timeout = setTimeout(() => {
+        reject("Operation timed out.");
+      }, 5000);
+
+      fetch("https://dummyjson.com/posts").then(response => {
+                clearTimeout(timeout);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => resolve(data))
+            .catch(error => reject(error.message));
+    });
+
+    
+
+    promiseOne
+      .then((data) => {
+        const apiSection = document.querySelector(".api-section");
+        data.posts.forEach((post) => {
+          message.innerHTML = "Posts:";
+          const heading = document.createElement("h2");
+          heading.innerHTML = post.title;
+          apiSection.appendChild(heading);
+          const postTitle = document.createElement("p");
+          postTitle.textContent = post.body;
+          apiSection.appendChild(postTitle);
+        });
+      })
+      .catch((err) => console.log(err));
+    }
+    
+  </script>
+</html>
